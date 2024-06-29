@@ -5,8 +5,6 @@ import streamlit as st
 import time
 
 
-
-
 model = "glm-4"
 
 system_message = "你是一个智能生活小助手，请回答用户的问题。"
@@ -54,37 +52,38 @@ if user_input:
     with st.chat_message("user"):
         st.markdown(user_input)
 
-    bot_response = chat(
-        client=client,
-        model=model,
-        history=history,
-        temperature=temperature,
-        top_p=top_p,
-        max_tokens=max_tokens,
-        tools=tools,
-    )
-
     with st.chat_message("assistant"):
+        with st.spinner("Thinking..."):
 
-        if isinstance(bot_response, pd.DataFrame):
-            bot_response_str = bot_response.to_string()
-            # with st.chat_message("assistant"):
-            st.write(bot_response)
+            bot_response = chat(
+                client=client,
+                model=model,
+                history=history,
+                temperature=temperature,
+                top_p=top_p,
+                max_tokens=max_tokens,
+                tools=tools,
+            )
 
-        elif isinstance(bot_response, tuple):
-            url, bot_response_str = bot_response
-            st.image(url, width=400)
-        else:
-            bot_response_str = bot_response
-            # with st.chat_message("assistant"):
-            # st.markdown(bot_response)
-            placeholder = st.empty()
-            full_response = ""
+            if isinstance(bot_response, pd.DataFrame):
+                bot_response_str = bot_response.to_string()
+                # with st.chat_message("assistant"):
+                st.write(bot_response)
 
-            for word in bot_response:
-                full_response += word
-                time.sleep(sleeptime)
-                placeholder.markdown(full_response)
+            elif isinstance(bot_response, tuple):
+                url, bot_response_str = bot_response
+                st.image(url, width=400)
+            else:
+                bot_response_str = bot_response
+                # with st.chat_message("assistant"):
+                # st.markdown(bot_response)
+                placeholder = st.empty()
+                full_response = ""
+
+                for word in bot_response:
+                    full_response += word
+                    time.sleep(sleeptime)
+                    placeholder.markdown(full_response)
 
     history.append({"role": "assistant", "content": bot_response_str})
     st.session_state.messages.append({"role": "assistant", "content": bot_response})
