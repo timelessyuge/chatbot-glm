@@ -5,7 +5,7 @@ import streamlit as st
 import time
 
 
-model = "glm-4"
+# model = "glm-4"
 
 system_message = "你是一个智能生活小助手，请回答用户的问题。"
 
@@ -18,7 +18,13 @@ st.set_page_config(
     initial_sidebar_state="expanded",  # collapsed
 )
 
-st.title("AI智能生活助手")
+col_t, col_b = st.columns([0.8,0.2])
+with col_t:
+    st.title("AI智能生活助手")
+    
+with col_b:
+    model = st.selectbox(label="model", label_visibility="hidden", options=['glm-4','glm-4-air','glm-3-turbo'])
+    
 st.markdown("解答您日常提问，请在下方的对话栏输入：")
 
 with st.sidebar:
